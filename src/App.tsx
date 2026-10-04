@@ -40,7 +40,7 @@ export default function App() {
   const [thinking, setThinking] = useState(false)
 
   const persona = getPersona(personaId)
-  const segments = flows[style]
+  const segments = flows[style] ?? flows[persona.defaultStyle]
   const safeIndex = Math.min(index, segments.length - 1)
   const currentLines = useMemo(() => scriptFor(persona, segments[safeIndex], info), [persona, segments, safeIndex, info])
 
