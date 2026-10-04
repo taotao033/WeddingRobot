@@ -47,7 +47,8 @@ export default function App() {
   const logId = useRef(0)
   const addLog = useCallback((role: LogRole, text: string) => {
     logId.current += 1
-    setLog((l) => [...l.slice(-199), { id: logId.current, role, text, at: Date.now() }])
+    const id = logId.current
+    setLog((l) => [...l.slice(-199), { id, role, text, at: Date.now() }])
   }, [])
 
   const handleIntentRef = useRef<(intent: Intent, raw: string) => void>(() => {})

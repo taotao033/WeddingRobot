@@ -28,8 +28,8 @@ export function SettingsPanel(props: Props) {
         <span>系统语音</span>
         <select value={props.voiceURI} onChange={(e) => props.onVoiceChange(e.target.value)}>
           <option value="">自动（按角色推荐）</option>
-          {zhFirst.map((v) => (
-            <option key={v.voiceURI} value={v.voiceURI}>
+          {zhFirst.map((v, i) => (
+            <option key={`${v.voiceURI}-${i}`} value={v.voiceURI}>
               {v.name} ({v.lang})
             </option>
           ))}

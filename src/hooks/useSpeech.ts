@@ -103,14 +103,26 @@ export function useSpeech({ onTranscript, onInterim }: UseSpeechOptions) {
 
         const voice = pickVoice(profile, preferredURI)
         let remaining = lines.length
-        const finish = () => {
-          remaining -= 1
-          if (remaining > 0) return
+        let done = false
+        const complete = () => {
+          if (done) return
+          done = true
+          window.clearTimeout(watchdog)
           speakingRef.current = false
           setSpeaking(false)
           if (wantListeningRef.current) setTimeout(startRecognition, 250)
           resolve()
         }
+        const finish = () => {
+          remaining -= 1
+          if (remaining <= 0) complete()
+        }
+        // Some engines never fire onend (e.g. no installed voices); don't leave the UI stuck in "speaking".
+        const totalChars = lines.reduce((n, l) => n + l.length, 0)
+        const watchdog = window.setTimeout(() => {
+          window.speechSynthesis.cancel()
+          complete()
+        }, (totalChars * 400) / profile.rate + 8000)
         for (const line of lines) {
           const u = new SpeechSynthesisUtterance(line)
           u.lang = profile.lang
